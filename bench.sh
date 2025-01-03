@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Supported types of plugin managers. ('base' is an empty .zshrc)
-PLUGIN_MANAGERS="base antibody antidote antigen sheldon zgen zgenom zinit zplug zpm"
+PLUGIN_MANAGERS="base antibody antidote antigen sheldon zgen zgenom zinit znap zplug zpm"
 
 # Prints an error message and exits.
 err() {
@@ -62,6 +62,9 @@ _prepare_install() {
             ;;
         zinit )
             echo 'find /root/.zinit -mindepth 1 -maxdepth 1 ! -name "bin" -exec rm -rf {} \;'
+            ;;
+        znap )
+            echo 'rm -rf /root/.znap/repos && rm -rf /root/.local && mkdir /root/.znap/repos'
             ;;
         zplug )
             echo 'rm -rf /root/.zplug/repos'
@@ -192,6 +195,21 @@ _update_plugins() {
         for line in $plugins; do
             IFS="@" read -r plugin branch <<< "$line"
             echo "zinit light $plugin" >> src/zinit/zshrc
+        done
+    fi
+
+    # Znap
+    if [ -z "$kind" ] || [ "$kind" = "znap" ]; then
+        echo '#!/usr/bin/env zsh' > src/znap/zshrc
+        echo 'source /root/.znap/znap.zsh' >> src/znap/zshrc
+        echo 'hash -d znap=/root/.znap/repos' >> src/znap/zshrc
+        echo "znap clone \\" >> src/znap/zshrc
+        for plugin in $plugins; do
+            echo "  $plugin \\" >> src/znap/zshrc
+        done
+        echo >> src/znap/zshrc
+        for plugin in $plugins; do
+            echo "znap source $plugin" >> src/znap/zshrc
         done
     fi
 
@@ -328,6 +346,12 @@ command_versions() {
     if [ -z "$kind" ] || [ "$kind" = "zinit" ]; then
         version=$(_docker_run base git -C /root/.zinit/bin rev-parse --short HEAD)
         echo "zinit master @ $version"
+    fi
+
+    # Znap
+    if [ -z "$kind" ] || [ "$kind" = "zinit" ]; then
+        version=$(_docker_run base git -C /root/.znap rev-parse --short HEAD)
+        echo "znap main @ $version"
     fi
 
     # Zplug

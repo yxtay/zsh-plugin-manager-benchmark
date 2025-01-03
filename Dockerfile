@@ -34,6 +34,10 @@ RUN git clone https://github.com/tarjoilija/zgen /root/.zgen
 RUN mkdir -p /root/.zinit/bin \
     && git clone https://github.com/zdharma-continuum/zinit.git /root/.zinit/bin
 
+# Znap
+RUN git clone --depth 1 -- https://github.com/marlonrichert/zsh-snap.git /root/.znap \
+    && mkdir -p /root/.znap/repos
+
 # Zgenom
 RUN git clone https://github.com/jandamm/zgenom /root/.zgenom
 
