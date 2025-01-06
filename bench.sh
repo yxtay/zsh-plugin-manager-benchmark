@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Supported types of plugin managers. ('base' is an empty .zshrc)
-PLUGIN_MANAGERS="base antibody antidote antigen sheldon zimfw znap zplug zpm zsh4humans zgenom zinit"
+PLUGIN_MANAGERS="base antibody antidote antigen sheldon zimfw znap zplug zpm zsh4humans zgenom zgen zinit-turbo zinit"
 
 # Prints an error message and exits.
 err() {
@@ -66,6 +66,9 @@ _prepare_install() {
         zinit )
             echo 'find /root/.zinit -mindepth 1 -maxdepth 1 ! -name "bin" -exec rm -rf {} +'
             ;;
+        zinit-turbo )
+            echo 'find /root/.zinit -mindepth 1 -maxdepth 1 ! -name "bin" -exec rm -rf {} +'
+            ;;
         znap )
             echo 'git -C /root/.znap clean -dffx'
             ;;
@@ -76,7 +79,7 @@ _prepare_install() {
             echo 'rm -rf /root/.zpm/plugins && rm -rf "${TMPDIR:-/tmp}/zsh-${UID:-user}"'
             ;;
         zsh4humans )
-            echo 'rm -rf /root/.cache/zsh4humans && ZDOTDIR=/root NO_INSTALL=1 zsh -is </dev/null'
+            echo 'git -C /root/.zsh4humans clean -dffx && ZDOTDIR=/root NO_INSTALL=1 zsh -is </dev/null'
             ;;
         * )
             return 1
@@ -103,9 +106,6 @@ _docker_args() {
             ;;
         zimfw )
             echo "-v $PWD/src/$kind/.zimrc:/root/.zimrc"
-            ;;
-        zsh4humans )
-            echo "-v $PWD/src/$kind/.zshenv:/root/.zshenv"
             ;;
         * )
             ;;
@@ -222,6 +222,17 @@ _update_plugins() {
         done
     fi
 
+    # Zinit Turbo
+    if [ -z "$kind" ] || [ "$kind" = "zinit-turbo" ]; then
+        echo '#!/usr/bin/env zsh' > src/zinit-turbo/zshrc
+        echo 'source "/root/.zinit/bin/zinit.zsh"' >> src/zinit-turbo/zshrc
+        echo 'zinit wait lucid for \' >> src/zinit-turbo/zshrc
+        for line in $plugins; do
+            IFS="@" read -r plugin branch <<< "$line"
+            echo "  $plugin \\" >> src/zinit-turbo/zshrc
+        done
+    fi
+
     # Znap
     if [ -z "$kind" ] || [ "$kind" = "znap" ]; then
         echo '#!/usr/bin/env zsh' > src/znap/zshrc
@@ -260,11 +271,16 @@ _update_plugins() {
         for line in $plugins; do
             IFS="@" read -r plugin branch <<< "$line"
             echo "  ${plugin},async \\" >> src/zpm/zshrc
+        done
+    fi
 
     # zsh4humans
     if [ -z "$kind" ] || [ "$kind" = "zsh4humans" ]; then
         echo '#!/usr/bin/env zsh' > src/zsh4humans/zshrc
         echo 'zstyle ":z4h:*" channel none' >> src/zsh4humans/zshrc
+        echo 'Z4H_URL="https://raw.githubusercontent.com/romkatv/zsh4humans/v5"' >> src/zsh4humans/zshrc
+        echo 'Z4H=/root/.zsh4humans' >> src/zsh4humans/zshrc
+        echo 'source $Z4H/z4h.zsh' >> src/zsh4humans/zshrc
         echo 'if (( ! NO_INSTALL )); then' >> src/zsh4humans/zshrc
         echo 'z4h install \' >> src/zsh4humans/zshrc
         for line in $plugins; do
@@ -273,7 +289,7 @@ _update_plugins() {
         done
         echo '' >> src/zsh4humans/zshrc
         echo 'fi' >> src/zsh4humans/zshrc
-        echo 'z4h init || return' >> src/zsh4humans/zshrc
+        echo 'z4h init' >> src/zsh4humans/zshrc
         for line in $plugins; do
             IFS="@" read -r plugin branch <<< "$line"
             echo "z4h load -c ${plugin}" >> src/zsh4humans/zshrc
@@ -389,6 +405,12 @@ command_versions() {
     if [ -z "$kind" ] || [ "$kind" = "zinit" ]; then
         version=$(_docker_run base git -C /root/.zinit/bin rev-parse --short HEAD)
         echo "zinit master @ $version"
+    fi
+
+    # Zinit Turbo
+    if [ -z "$kind" ] || [ "$kind" = "zinit" ]; then
+        version=$(_docker_run base git -C /root/.zinit/bin rev-parse --short HEAD)
+        echo "zinit-turbo master @ $version"
     fi
 
     # Zimfw

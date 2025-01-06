@@ -1,9 +1,8 @@
 #!/usr/bin/env zsh
+zstyle ':znap:*' repos-dir /root/.znap/repos
 source /root/.znap/znap.zsh
-hash -d znap=/root/.znap/repos
 znap clone \
   zsh-users/zsh-autosuggestions \
-  wting/autojump \
   zsh-users/zsh-syntax-highlighting \
   StackExchange/blackbox \
   b4b4r07/enhancd \
@@ -11,7 +10,6 @@ znap clone \
   zsh-users/zsh-history-substring-search \
   supercrabtree/k \
   chriskempson/base16-shell \
-  wfxr/forgit \
   zdharma/fast-syntax-highlighting \
   larkery/zsh-histdb \
   MichaelAquilina/zsh-you-should-use \
@@ -25,12 +23,10 @@ znap clone \
   zsh-users/zaw \
   djui/alias-tips \
   changyuheng/fz \
-  b4b4r07/emoji-cli \
   Tarrasch/zsh-bd \
   zdharma/history-search-multi-word \
 
 znap source zsh-users/zsh-autosuggestions
-znap source wting/autojump
 znap source zsh-users/zsh-syntax-highlighting
 znap source StackExchange/blackbox
 znap source b4b4r07/enhancd
@@ -38,7 +34,6 @@ znap source fcambus/ansiweather
 znap source zsh-users/zsh-history-substring-search
 znap source supercrabtree/k
 znap source chriskempson/base16-shell
-znap source wfxr/forgit
 znap source zdharma/fast-syntax-highlighting
 znap source larkery/zsh-histdb
 znap source MichaelAquilina/zsh-you-should-use
@@ -52,6 +47,5 @@ znap source Tarrasch/zsh-autoenv
 znap source zsh-users/zaw
 znap source djui/alias-tips
 znap source changyuheng/fz
-znap source b4b4r07/emoji-cli
 znap source Tarrasch/zsh-bd
 znap source zdharma/history-search-multi-word
