@@ -31,10 +31,11 @@ RUN curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh
 RUN git clone --depth 1 https://github.com/tarjoilija/zgen /root/.zgen
 
 # Zinit
-RUN git clone --depth 1 https://github.com/zdharma-continuum/zinit.git /root/.zinit
+RUN git clone --depth 1 https://github.com/zdharma-continuum/zinit.git /root/.zinit/bin
 
 # Zimfw
-RUN git clone --depth 1 https://github.com/zimfw/zimfw /root/.zim
+RUN curl -fsSL --create-dirs -o /root/.zim/zimfw.zsh \
+    https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
 
 # Znap
 RUN git clone --depth 1 -- https://github.com/marlonrichert/zsh-snap.git /root/.znap \
@@ -48,3 +49,5 @@ RUN git clone --depth 1 https://github.com/zplug/zplug /root/.zplug
 
 # Zpm
 RUN git clone --depth 1 https://github.com/zpm-zsh/zpm /root/.zpm
+
+RUN echo 'unset global_rcs' >> /etc/zshenv

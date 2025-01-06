@@ -61,10 +61,10 @@ _prepare_install() {
             echo 'git -C /root/.zgenom clean -dffx'
             ;;
         zimfw )
-            echo 'git -C /root/.zim clean -dffx'
+            echo 'find /root/.zim -mindepth 1 -maxdepth 1 ! -name "zimfw.zsh" -exec rm -rf {} +'
             ;;
         zinit )
-            echo 'git -C /root/.zinit clean -dffx'
+            echo 'find /root/.zinit -mindepth 1 -maxdepth 1 ! -name "bin" -exec rm -rf {} +'
             ;;
         znap )
             echo 'rm -rf /root/.znap/repos && rm -rf /root/.local && mkdir /root/.znap/repos'
@@ -73,7 +73,7 @@ _prepare_install() {
             echo 'git -C /root/.zplug clean -dffx'
             ;;
         zpm )
-            echo 'git -C /root/.zpm clean -dffx; rm -rf "${TMPDIR:-/tmp}/zsh-${UID:-user}";'
+            echo 'rm -rf /root/.zpm/plugins; rm -rf "${TMPDIR:-/tmp}/zsh-${UID:-user};"'
             ;;
         * )
             return 1
@@ -87,18 +87,19 @@ _docker_build() {
 
 # Outputs extra arguments for the Docker run command for the given plugin manager.
 _docker_args() {
-    case $1 in
+    local kind=$1
+    case $kind in
         antibody )
-            echo "-v $PWD/src/antibody/plugins.txt:/root/.antibody/plugins.txt"
+            echo "-v $PWD/src/$kind/plugins.txt:/root/.antibody/plugins.txt"
             ;;
         antidote )
-            echo "-v $PWD/src/antidote/zsh_plugins.txt:/root/.zsh_plugins.txt"
+            echo "-v $PWD/src/$kind/zsh_plugins.txt:/root/.zsh_plugins.txt"
             ;;
         sheldon )
-            echo "-v $PWD/src/sheldon/plugins.toml:/root/.config/sheldon/plugins.toml"
+            echo "-v $PWD/src/$kind/plugins.toml:/root/.config/sheldon/plugins.toml"
             ;;
         zimfw )
-            echo "-v $PWD/src/zimfw/.zimrc:/root/.zimrc"
+            echo "-v $PWD/src/$kind/.zimrc:/root/.zimrc"
             ;;
         * )
             ;;
@@ -208,7 +209,7 @@ _update_plugins() {
     # Zinit
     if [ -z "$kind" ] || [ "$kind" = "zinit" ]; then
         echo '#!/usr/bin/env zsh' > src/zinit/zshrc
-        echo 'source "/root/.zinit/zinit.zsh"' >> src/zinit/zshrc
+        echo 'source "/root/.zinit/bin/zinit.zsh"' >> src/zinit/zshrc
         for line in $plugins; do
             IFS="@" read -r plugin branch <<< "$line"
             echo "zinit light $plugin" >> src/zinit/zshrc
@@ -361,8 +362,14 @@ command_versions() {
 
     # Zinit
     if [ -z "$kind" ] || [ "$kind" = "zinit" ]; then
-        version=$(_docker_run base git -C /root/.zinit rev-parse --short HEAD)
+        version=$(_docker_run base git -C /root/.zinit/bin rev-parse --short HEAD)
         echo "zinit master @ $version"
+    fi
+
+    # Zimfw
+    if [ -z "$kind" ] || [ "$kind" = "zimfw" ]; then
+        version=$(_docker_run base zsh -c 'export ZIM_HOME=/root/.zim; source $ZIM_HOME/zimfw.zsh version;')
+        echo "zimfw v$version"
     fi
 
     # Zplug
