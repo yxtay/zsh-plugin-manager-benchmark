@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Supported types of plugin managers. ('base' is an empty .zshrc)
-PLUGIN_MANAGERS="base antibody antidote antigen sheldon zgen zgenom zimfw zinit zplug zpm"
+PLUGIN_MANAGERS="base antibody antidote antigen sheldon zimfw znap zplug zpm zsh4humans zgenom zinit"
 
 # Prints an error message and exits.
 err() {
@@ -67,13 +67,16 @@ _prepare_install() {
             echo 'find /root/.zinit -mindepth 1 -maxdepth 1 ! -name "bin" -exec rm -rf {} +'
             ;;
         znap )
-            echo 'rm -rf /root/.znap/repos && rm -rf /root/.local && mkdir /root/.znap/repos'
+            echo 'git -C /root/.znap clean -dffx'
             ;;
         zplug )
             echo 'git -C /root/.zplug clean -dffx'
             ;;
         zpm )
-            echo 'rm -rf /root/.zpm/plugins; rm -rf "${TMPDIR:-/tmp}/zsh-${UID:-user};"'
+            echo 'rm -rf /root/.zpm/plugins && rm -rf "${TMPDIR:-/tmp}/zsh-${UID:-user}"'
+            ;;
+        zsh4humans )
+            echo 'rm -rf /root/.cache/zsh4humans && ZDOTDIR=/root NO_INSTALL=1 zsh -is </dev/null'
             ;;
         * )
             return 1
@@ -100,6 +103,9 @@ _docker_args() {
             ;;
         zimfw )
             echo "-v $PWD/src/$kind/.zimrc:/root/.zimrc"
+            ;;
+        zsh4humans )
+            echo "-v $PWD/src/$kind/.zshenv:/root/.zshenv"
             ;;
         * )
             ;;
@@ -219,14 +225,16 @@ _update_plugins() {
     # Znap
     if [ -z "$kind" ] || [ "$kind" = "znap" ]; then
         echo '#!/usr/bin/env zsh' > src/znap/zshrc
+        echo "zstyle ':znap:*' repos-dir /root/.znap/repos" >> src/znap/zshrc
         echo 'source /root/.znap/znap.zsh' >> src/znap/zshrc
-        echo 'hash -d znap=/root/.znap/repos' >> src/znap/zshrc
         echo "znap clone \\" >> src/znap/zshrc
-        for plugin in $plugins; do
+        for line in $plugins; do
+            IFS="@" read -r plugin branch <<< "$line"
             echo "  $plugin \\" >> src/znap/zshrc
         done
         echo >> src/znap/zshrc
-        for plugin in $plugins; do
+        for line in $plugins; do
+            IFS="@" read -r plugin branch <<< "$line"
             echo "znap source $plugin" >> src/znap/zshrc
         done
     fi
@@ -252,6 +260,23 @@ _update_plugins() {
         for line in $plugins; do
             IFS="@" read -r plugin branch <<< "$line"
             echo "  ${plugin},async \\" >> src/zpm/zshrc
+
+    # zsh4humans
+    if [ -z "$kind" ] || [ "$kind" = "zsh4humans" ]; then
+        echo '#!/usr/bin/env zsh' > src/zsh4humans/zshrc
+        echo 'zstyle ":z4h:*" channel none' >> src/zsh4humans/zshrc
+        echo 'if (( ! NO_INSTALL )); then' >> src/zsh4humans/zshrc
+        echo 'z4h install \' >> src/zsh4humans/zshrc
+        for line in $plugins; do
+            IFS="@" read -r plugin branch <<< "$line"
+            echo "  ${plugin} \\" >> src/zsh4humans/zshrc
+        done
+        echo '' >> src/zsh4humans/zshrc
+        echo 'fi' >> src/zsh4humans/zshrc
+        echo 'z4h init || return' >> src/zsh4humans/zshrc
+        for line in $plugins; do
+            IFS="@" read -r plugin branch <<< "$line"
+            echo "z4h load -c ${plugin}" >> src/zsh4humans/zshrc
         done
     fi
 }
@@ -372,6 +397,12 @@ command_versions() {
         echo "zimfw v$version"
     fi
 
+    # Znap
+    if [ -z "$kind" ] || [ "$kind" = "zinit" ]; then
+        version=$(_docker_run base git -C /root/.znap rev-parse --short HEAD)
+        echo "znap main @ $version"
+    fi
+
     # Zplug
     if [ -z "$kind" ] || [ "$kind" = "zplug" ]; then
         version=$(_docker_run base git -C /root/.zplug rev-parse --short HEAD)
@@ -382,6 +413,12 @@ command_versions() {
     if [ -z "$kind" ] || [ "$kind" = "zpm" ]; then
         version=$(_docker_run base git -C /root/.zpm rev-parse --short HEAD)
         echo "zpm master @ $version"
+    fi
+
+    # zsh4humans
+    if [ -z "$kind" ] || [ "$kind" = "zsh4humans" ]; then
+        version=$(_docker_run base git -C /root/.zsh4humans rev-parse --short HEAD)
+        echo "zsh4humans v5 @ $version"
     fi
 }
 
