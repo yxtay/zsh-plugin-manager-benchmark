@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 export ZPLUG_HOME=/root/.zplug
-source "$ZPLUG_HOME/init.zsh"
+source $ZPLUG_HOME/init.zsh
 zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "StackExchange/blackbox"

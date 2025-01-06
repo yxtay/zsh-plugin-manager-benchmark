@@ -1,6 +1,5 @@
 #!/usr/bin/env zsh
-zstyle ":z4h:*" channel none
-Z4H_URL="https://raw.githubusercontent.com/romkatv/zsh4humans/v5"
+Z4H_URL=https://raw.githubusercontent.com/romkatv/zsh4humans/v5
 Z4H=/root/.zsh4humans
 source $Z4H/z4h.zsh
 if (( ! NO_INSTALL )); then

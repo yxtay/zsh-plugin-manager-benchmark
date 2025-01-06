@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 export ZGEN_DIR=/root/.zgenom
-source "$ZGEN_DIR/zgenom.zsh"
+source $ZGEN_DIR/zgenom.zsh
 if ! zgenom saved; then
   zgenom load zsh-users/zsh-autosuggestions
   zgenom load zsh-users/zsh-syntax-highlighting

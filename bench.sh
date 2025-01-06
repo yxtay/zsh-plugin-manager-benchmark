@@ -193,7 +193,7 @@ _update_plugins() {
     if [ -z "$kind" ] || [ "$kind" = "zgenom" ]; then
         echo '#!/usr/bin/env zsh' > src/zgenom/zshrc
         echo 'export ZGEN_DIR=/root/.zgenom' >> src/zgenom/zshrc
-        echo 'source "$ZGEN_DIR/zgenom.zsh"' >> src/zgenom/zshrc
+        echo 'source $ZGEN_DIR/zgenom.zsh' >> src/zgenom/zshrc
         echo 'if ! zgenom saved; then' >> src/zgenom/zshrc
         for line in $plugins; do
             IFS="@" read -r plugin branch <<< "$line"
@@ -215,7 +215,7 @@ _update_plugins() {
     # Zinit
     if [ -z "$kind" ] || [ "$kind" = "zinit" ]; then
         echo '#!/usr/bin/env zsh' > src/zinit/zshrc
-        echo 'source "/root/.zinit/bin/zinit.zsh"' >> src/zinit/zshrc
+        echo 'source /root/.zinit/bin/zinit.zsh' >> src/zinit/zshrc
         for line in $plugins; do
             IFS="@" read -r plugin branch <<< "$line"
             echo "zinit light $plugin" >> src/zinit/zshrc
@@ -225,11 +225,10 @@ _update_plugins() {
     # Zinit Turbo
     if [ -z "$kind" ] || [ "$kind" = "zinit-turbo" ]; then
         echo '#!/usr/bin/env zsh' > src/zinit-turbo/zshrc
-        echo 'source "/root/.zinit/bin/zinit.zsh"' >> src/zinit-turbo/zshrc
-        echo 'zinit wait lucid for \' >> src/zinit-turbo/zshrc
+        echo 'source /root/.zinit/bin/zinit.zsh' >> src/zinit-turbo/zshrc
         for line in $plugins; do
             IFS="@" read -r plugin branch <<< "$line"
-            echo "  $plugin \\" >> src/zinit-turbo/zshrc
+            echo "zinit wait lucid for $plugin" >> src/zinit-turbo/zshrc
         done
     fi
 
@@ -254,7 +253,7 @@ _update_plugins() {
     if [ -z "$kind" ] || [ "$kind" = "zplug" ]; then
         echo '#!/usr/bin/env zsh' > src/zplug/zshrc
         echo 'export ZPLUG_HOME=/root/.zplug' >> src/zplug/zshrc
-        echo 'source "$ZPLUG_HOME/init.zsh"' >> src/zplug/zshrc
+        echo 'source $ZPLUG_HOME/init.zsh' >> src/zplug/zshrc
         for line in $plugins; do
             IFS="@" read -r plugin branch <<< "$line"
             echo "zplug \"$plugin\"" >> src/zplug/zshrc
@@ -266,7 +265,7 @@ _update_plugins() {
     # Zpm
     if [ -z "$kind" ] || [ "$kind" = "zpm" ]; then
         echo '#!/usr/bin/env zsh' > src/zpm/zshrc
-        echo 'source "/root/.zpm/zpm.zsh"' >> src/zpm/zshrc
+        echo 'source /root/.zpm/zpm.zsh' >> src/zpm/zshrc
         echo 'zpm load \' >> src/zpm/zshrc
         for line in $plugins; do
             IFS="@" read -r plugin branch <<< "$line"
@@ -277,8 +276,7 @@ _update_plugins() {
     # zsh4humans
     if [ -z "$kind" ] || [ "$kind" = "zsh4humans" ]; then
         echo '#!/usr/bin/env zsh' > src/zsh4humans/zshrc
-        echo 'zstyle ":z4h:*" channel none' >> src/zsh4humans/zshrc
-        echo 'Z4H_URL="https://raw.githubusercontent.com/romkatv/zsh4humans/v5"' >> src/zsh4humans/zshrc
+        echo 'Z4H_URL=https://raw.githubusercontent.com/romkatv/zsh4humans/v5' >> src/zsh4humans/zshrc
         echo 'Z4H=/root/.zsh4humans' >> src/zsh4humans/zshrc
         echo 'source $Z4H/z4h.zsh' >> src/zsh4humans/zshrc
         echo 'if (( ! NO_INSTALL )); then' >> src/zsh4humans/zshrc

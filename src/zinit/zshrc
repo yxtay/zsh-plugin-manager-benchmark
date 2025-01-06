@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-source "/root/.zinit/bin/zinit.zsh"
+source /root/.zinit/bin/zinit.zsh
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light StackExchange/blackbox

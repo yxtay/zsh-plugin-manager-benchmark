@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-source "/root/.zpm/zpm.zsh"
+source /root/.zpm/zpm.zsh
 zpm load \
   zsh-users/zsh-autosuggestions,async \
   zsh-users/zsh-syntax-highlighting,async \

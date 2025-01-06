@@ -1,26 +1,25 @@
 #!/usr/bin/env zsh
-source "/root/.zinit/bin/zinit.zsh"
-zinit wait lucid for \
-  zsh-users/zsh-autosuggestions \
-  zsh-users/zsh-syntax-highlighting \
-  StackExchange/blackbox \
-  b4b4r07/enhancd \
-  fcambus/ansiweather \
-  zsh-users/zsh-history-substring-search \
-  supercrabtree/k \
-  chriskempson/base16-shell \
-  zdharma/fast-syntax-highlighting \
-  larkery/zsh-histdb \
-  MichaelAquilina/zsh-you-should-use \
-  iam4x/zsh-iterm-touchbar \
-  unixorn/git-extra-commands \
-  marlonrichert/zsh-autocomplete \
-  mfaerevaag/wd \
-  agkozak/zsh-z \
-  mafredri/zsh-async \
-  Tarrasch/zsh-autoenv \
-  zsh-users/zaw \
-  djui/alias-tips \
-  changyuheng/fz \
-  Tarrasch/zsh-bd \
-  zdharma/history-search-multi-word \
+source /root/.zinit/bin/zinit.zsh
+zinit wait lucid for zsh-users/zsh-autosuggestions
+zinit wait lucid for zsh-users/zsh-syntax-highlighting
+zinit wait lucid for StackExchange/blackbox
+zinit wait lucid for b4b4r07/enhancd
+zinit wait lucid for fcambus/ansiweather
+zinit wait lucid for zsh-users/zsh-history-substring-search
+zinit wait lucid for supercrabtree/k
+zinit wait lucid for chriskempson/base16-shell
+zinit wait lucid for zdharma/fast-syntax-highlighting
+zinit wait lucid for larkery/zsh-histdb
+zinit wait lucid for MichaelAquilina/zsh-you-should-use
+zinit wait lucid for iam4x/zsh-iterm-touchbar
+zinit wait lucid for unixorn/git-extra-commands
+zinit wait lucid for marlonrichert/zsh-autocomplete
+zinit wait lucid for mfaerevaag/wd
+zinit wait lucid for agkozak/zsh-z
+zinit wait lucid for mafredri/zsh-async
+zinit wait lucid for Tarrasch/zsh-autoenv
+zinit wait lucid for zsh-users/zaw
+zinit wait lucid for djui/alias-tips
+zinit wait lucid for changyuheng/fz
+zinit wait lucid for Tarrasch/zsh-bd
+zinit wait lucid for zdharma/history-search-multi-word
