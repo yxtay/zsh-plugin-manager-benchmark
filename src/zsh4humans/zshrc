@@ -53,3 +53,4 @@ z4h load -c djui/alias-tips
 z4h load -c changyuheng/fz
 z4h load -c Tarrasch/zsh-bd
 z4h load -c zdharma/history-search-multi-word
+source /root/.p10k.zsh

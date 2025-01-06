@@ -79,7 +79,7 @@ _prepare_install() {
             echo 'rm -rf /root/.zpm/plugins && rm -rf "${TMPDIR:-/tmp}/zsh-${UID:-user}"'
             ;;
         zsh4humans )
-            echo 'git -C /root/.zsh4humans clean -dffx && ZDOTDIR=/root NO_INSTALL=1 zsh -is </dev/null'
+            echo 'find /root/.zsh4humans -mindepth 1 -maxdepth 1 ! -name "z4h.zsh" -exec rm -rf {} + && ZDOTDIR=/root NO_INSTALL=1 zsh -is </dev/null'
             ;;
         * )
             return 1
@@ -106,6 +106,9 @@ _docker_args() {
             ;;
         zimfw )
             echo "-v $PWD/src/$kind/.zimrc:/root/.zimrc"
+            ;;
+        zsh4humans )
+            echo "-v $PWD/src/$kind/.p10k.zsh:/root/.p10k.zsh"
             ;;
         * )
             ;;
@@ -292,6 +295,7 @@ _update_plugins() {
             IFS="@" read -r plugin branch <<< "$line"
             echo "z4h load -c ${plugin}" >> src/zsh4humans/zshrc
         done
+        echo 'source /root/.p10k.zsh' >> src/zsh4humans/zshrc
     fi
 }
 

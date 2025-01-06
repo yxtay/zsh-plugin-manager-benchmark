@@ -50,8 +50,8 @@ RUN git clone --depth 1 https://github.com/zplug/zplug /root/.zplug
 RUN git clone --depth 1 https://github.com/zpm-zsh/zpm /root/.zpm
 
 # zsh4humans
-RUN git clone --branch v5 --depth 1 https://github.com/romkatv/zsh4humans \
-    /root/.zsh4humans
+RUN curl -fsSL --create-dirs -o /root/.zsh4humans/z4h.zsh \
+    https://github.com/romkatv/zsh4humans/raw/v5/z4h.zsh
 
 RUN echo 'unset global_rcs' >> /etc/zshenv \
     && chsh -s /usr/bin/zsh
